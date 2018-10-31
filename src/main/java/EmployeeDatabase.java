@@ -11,7 +11,14 @@ import java.util.List;
  * @see <a href="https://cs125.cs.illinois.edu/lab/10/">Lab 10 Description</a>
  */
 public class EmployeeDatabase {
-
+    /**
+     * countAbove.
+     */
+    public int countAbove;
+    /**
+     * countBelow.
+     */
+    public int countBelow;
     /**
      * List of employees.
      */
@@ -30,8 +37,8 @@ public class EmployeeDatabase {
     /**
      * Returns the manager for the given employee.
      *
-     * @param employee
-     * @return
+     * @param employee is the employee.
+     * @return Employee
      */
     Employee findManager(final Employee employee) {
         Employee manager = null;
@@ -56,6 +63,12 @@ public class EmployeeDatabase {
         /*
          * Implement this function
          */
+        if (findManager(employee) == null) {
+            return countAbove;
+        } else {
+            countAbove++;
+            return countManagersAbove(findManager(employee));
+        }
     }
 
     /**
@@ -63,13 +76,40 @@ public class EmployeeDatabase {
      * <p>
      * Consider both a recursive and an iterative solution to this problem.
      *
-     * @param employee name of the employee
+     * @param e name of the employee
      * @return int
      */
-    public int countEmployeesUnder(final Employee employee) {
+    public int countEmployeesUnder(final Employee e) {
         /*
          * Implement this function
          */
+        int count = 0;
+        ArrayList<Employee> mySubs = mySub(e);
+        if (mySubs.isEmpty()) {
+            return 0;
+        } else {
+            for (int i = 0; i < mySubs.size(); i++) {
+                count = count + countEmployeesUnder(mySubs.get(i)) + 1;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * helper function.
+     * @param e employee
+     * @return ArrayList of employees
+     */
+    public ArrayList<Employee> mySub(final Employee e) {
+        ArrayList<Employee> output = new ArrayList<Employee>();
+        for (int i = 0; i < employees.size(); i++) {
+            Employee temp = employees.get(i);
+            String manager = temp.getManager();
+            if (manager.equals(e.getName())) {
+                output.add(temp);
+            }
+        }
+        return output;
     }
 
     /**
